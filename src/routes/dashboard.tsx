@@ -149,7 +149,10 @@ function Overview({ userId, isOwner }: { userId: string; isOwner: boolean }) {
       }
       const [apps, favs] = await Promise.all([
         supabase.from("adoption_applications").select("id, status").eq("adopter_id", userId),
-        supabase.from("favorites").select("id", { count: "exact", head: true }),
+        supabase
+  .from("favorites")
+  .select("id", { count: "exact", head: true })
+  .eq("user_id", userId),
       ]);
       const list = apps.data ?? [];
       return {
@@ -423,10 +426,10 @@ function Favorites({ userId }: { userId: string }) {
     queryKey: ["favorite-pets", userId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("favorites")
-        .select("id, pet_id, pets(*, pet_images(image_url, is_primary))")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
+       .from("favorites")
+.select("id, pet_id, pets(*, pet_images(image_url, is_primary))")
+.eq("user_id", userId)
+.order("created_at", { ascending: false });
       return data;
     },
   });
