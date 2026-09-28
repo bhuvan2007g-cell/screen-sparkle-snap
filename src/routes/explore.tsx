@@ -50,7 +50,7 @@ function Explore() {
       if (species !== ANY) q = q.eq("species", species);
       if (gender !== ANY) q = q.eq("gender", gender);
       if (size !== ANY) q = q.eq("size", size);
-      if (status !== ANY) q = q.eq("status", status);
+      if (status !== ANY) q = q.eq("status", status as "available" | "pending" | "adopted");
       q = q.order("created_at", { ascending: sort === "oldest" });
       const { data, error } = await q.limit(200);
       if (error) throw error;
@@ -98,10 +98,10 @@ function Explore() {
     const isFav = favorites?.includes(petId);
     if (isFav) {
       const { error } = await supabase.from("favorites").delete().eq("pet_id", petId).eq("user_id", user.id);
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
     } else {
       const { error } = await supabase.from("favorites").insert({ pet_id: petId, user_id: user.id });
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
     }
     void queryClient.invalidateQueries({ queryKey: ["favorites"] });
   }

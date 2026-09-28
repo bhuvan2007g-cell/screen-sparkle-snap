@@ -163,7 +163,7 @@ function Users() {
 
   async function toggleSuspend(id: string, suspended: boolean) {
     const { error } = await supabase.from("profiles").update({ suspended: !suspended }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(suspended ? "User reinstated" : "User suspended");
     void queryClient.invalidateQueries({ queryKey: ["admin-users"] });
   }
@@ -208,7 +208,7 @@ function Pets() {
 
   async function removeListing(id: string) {
     const { error } = await supabase.from("pets").update({ status: "removed" }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Listing removed from search");
     void queryClient.invalidateQueries({ queryKey: ["admin-pets"] });
   }
@@ -291,7 +291,7 @@ function Reports() {
 
   async function setStatus(id: string, status: "reviewing" | "resolved" | "dismissed") {
     const { error } = await supabase.from("reports").update({ status }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     void queryClient.invalidateQueries({ queryKey: ["admin-reports"] });
   }
 

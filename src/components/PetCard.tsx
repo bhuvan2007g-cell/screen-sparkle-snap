@@ -21,9 +21,9 @@ export function PetCard({
   onToggleFavorite,
 }: {
   pet: PetCardPet;
-  imageUrl?: string;
-  isFavorite?: boolean;
-  onToggleFavorite?: () => void;
+  imageUrl?: string | undefined;
+  isFavorite?: boolean | undefined;
+  onToggleFavorite?: (() => void) | undefined;
 }) {
   return (
     <article className="surface-card lift-on-hover group overflow-hidden">

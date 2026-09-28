@@ -167,7 +167,7 @@ function PetDetails() {
       await supabase.from("favorites").delete().eq("pet_id", petId).eq("user_id", user.id);
     } else {
       const { error } = await supabase.from("favorites").insert({ pet_id: petId, user_id: user.id });
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
     }
     void queryClient.invalidateQueries({ queryKey: ["favorite", petId] });
     toast.success(isFavorite ? "Removed from favourites" : "Saved to favourites");
@@ -207,7 +207,7 @@ function PetDetails() {
 
   async function markAdopted() {
     const { error } = await supabase.from("pets").update({ status: "adopted" }).eq("id", petId);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`${pet!.name} is now marked as adopted.`);
     void queryClient.invalidateQueries({ queryKey: ["pet", petId] });
   }
@@ -217,14 +217,14 @@ function PetDetails() {
       toast.error("Sign in to report a listing");
       return;
     }
-    if (report.reason.trim().length < 3) return toast.error("Please give a reason");
+    if (report.reason.trim().length < 3) { toast.error("Please give a reason"); return; }
     const { error } = await supabase.from("reports").insert({
       reporter_id: user.id,
       pet_id: petId,
       reason: report.reason.trim(),
       description: report.description.trim(),
     });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setReportOpen(false);
     setReport({ reason: "", description: "" });
     toast.success("Thanks — our team will review this listing.");

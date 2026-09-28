@@ -201,7 +201,7 @@ function MyPets({ userId }: { userId: string }) {
   async function remove(id: string, name: string) {
     if (!confirm(`Delete the listing for ${name}? This cannot be undone.`)) return;
     const { error } = await supabase.from("pets").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Listing deleted");
     refresh();
   }
@@ -239,7 +239,7 @@ function MyPets({ userId }: { userId: string }) {
                   size="sm"
                   onClick={async () => {
                     const { error } = await supabase.from("pets").update({ status: "adopted" }).eq("id", pet.id);
-                    if (error) return toast.error(error.message);
+                    if (error) { toast.error(error.message); return; }
                     toast.success("Marked as adopted");
                     refresh();
                   }}
@@ -287,7 +287,7 @@ function OwnerApplications({ userId }: { userId: string }) {
 
   async function decide(id: string, status: "approved" | "rejected" | "under_review") {
     const { error } = await supabase.from("adoption_applications").update({ status }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(`Application ${status.replace("_", " ")}`);
     void queryClient.invalidateQueries();
   }
@@ -594,7 +594,7 @@ function ProfileForm() {
 
   async function save() {
     if (!profile) return;
-    if (form.full_name.trim().length < 2) return toast.error("Enter your full name");
+    if (form.full_name.trim().length < 2) { toast.error("Enter your full name"); return; }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
@@ -608,7 +608,7 @@ function ProfileForm() {
     if (!error && profile.role === "organization") {
       if (org.organization_name.trim().length < 2) {
         setSaving(false);
-        return toast.error("Organization name is required");
+        { toast.error("Organization name is required"); return; }
       }
       const payload = {
         profile_id: profile.id,
@@ -623,13 +623,13 @@ function ProfileForm() {
         : await supabase.from("organizations").insert(payload);
       if (orgResult.error) {
         setSaving(false);
-        return toast.error(orgResult.error.message);
+        { toast.error(orgResult.error.message); return; }
       }
       void refetch();
     }
 
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     await refreshProfile();
     toast.success("Profile updated");
   }
