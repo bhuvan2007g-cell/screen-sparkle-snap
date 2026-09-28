@@ -350,9 +350,9 @@ export function PetFormDialog({
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="space-y-2">
-      <Label>{label}</Label>
+    <label className="block space-y-2">
+      <span className="text-sm leading-none font-medium">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
